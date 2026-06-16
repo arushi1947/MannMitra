@@ -7,17 +7,19 @@ import {
 
 const firebaseConfig = {
 
-  apiKey: "AIzaSyAI0N5eeElBqOIm-FmF8atSTpRpZTJuFEI",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
 
-  authDomain: "mannmitra-ee930.firebaseapp.com",
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
 
-  projectId: "mannmitra-ee930",
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
 
-  storageBucket: "mannmitra-ee930.firebasestorage.app",
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
 
-  messagingSenderId: "327901938768",
+  messagingSenderId:
+    import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
 
-  appId: "1:327901938768:web:4b3bc0ad4ad5d7739f7d55"
+  appId:
+    import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
 const app = initializeApp(firebaseConfig);
