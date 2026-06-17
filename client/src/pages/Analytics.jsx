@@ -63,6 +63,20 @@ function Analytics() {
 
     const [completionRate, setCompletionRate] = useState(0);
 
+    const [emotionDistribution, setEmotionDistribution] = useState([]);
+    
+    const [dominantEmotion, setDominantEmotion] = useState("");
+    
+    const [positiveRatio, setPositiveRatio] = useState(0);
+    
+    const [stressIndex, setStressIndex] = useState(0);
+    
+    const [emotionalStability, setEmotionalStability] = useState("");
+    
+    const [weeklyAISummary, setWeeklyAISummary] = useState("");
+    
+    const [patternDetector, setPatternDetector] = useState([]);
+
     useEffect(() => {
     
       const handleResize = () => {
@@ -191,6 +205,34 @@ function Analytics() {
 
         setCompletionRate(
             response.data.completionRate
+        );
+
+        setEmotionDistribution(
+          response.data.emotionDistribution
+        );
+
+        setDominantEmotion(
+          response.data.dominantEmotion
+        );
+
+        setPositiveRatio(
+          response.data.positiveRatio
+        );
+
+        setStressIndex(
+          response.data.stressIndex
+        );
+
+        setEmotionalStability(
+          response.data.emotionalStability
+        );
+
+        setWeeklyAISummary(
+          response.data.weeklyAISummary
+        );
+
+        setPatternDetector(
+          response.data.patternDetector
         );
 
     }
@@ -1521,6 +1563,202 @@ no-scrollbar
     </div>
 
   </div>
+
+</div>
+
+<div className="mt-20">
+
+<h2 className="text-4xl font-bold text-center text-gray-800">
+    Journal Sentiment Insights
+</h2>
+
+<p className="text-center text-gray-500 mt-3">
+    Understand your emotional patterns through your journal entries
+</p>
+
+<div
+className="
+mt-10
+
+flex
+overflow-x-auto
+gap-5
+pb-4
+
+lg:grid
+lg:grid-cols-4
+
+snap-x
+no-scrollbar
+"
+>
+
+<div
+className="
+min-w-[240px]
+snap-start
+bg-white/50
+backdrop-blur-xl
+rounded-[35px]
+p-8
+shadow-xl
+"
+>
+
+<p className="text-gray-500">
+Dominant Emotion
+</p>
+
+<h2 className="text-3xl font-bold text-pink-500 mt-4">
+{dominantEmotion}
+</h2>
+
+</div>
+
+
+<div
+className="
+min-w-[240px]
+snap-start
+bg-white/50
+backdrop-blur-xl
+rounded-[35px]
+p-8
+shadow-xl
+"
+>
+
+<p className="text-gray-500">
+Positive Ratio
+</p>
+
+<h2 className="text-3xl font-bold text-green-500 mt-4">
+{positiveRatio}%
+</h2>
+
+</div>
+
+
+<div
+className="
+min-w-[240px]
+snap-start
+bg-white/50
+backdrop-blur-xl
+rounded-[35px]
+p-8
+shadow-xl
+"
+>
+
+<p className="text-gray-500">
+Stress Index
+</p>
+
+<h2 className="text-3xl font-bold text-red-500 mt-4">
+{stressIndex}%
+</h2>
+
+</div>
+
+
+<div
+className="
+min-w-[240px]
+snap-start
+bg-white/50
+backdrop-blur-xl
+rounded-[35px]
+p-8
+shadow-xl
+"
+>
+
+<p className="text-gray-500">
+Emotional Stability
+</p>
+
+<h2 className="text-2xl font-bold text-purple-600 mt-4">
+{emotionalStability}
+</h2>
+
+</div>
+
+</div>
+
+<div
+className="
+mt-10
+bg-gradient-to-r
+from-purple-50
+to-pink-50
+rounded-[35px]
+p-8
+shadow-xl
+border
+border-purple-100
+"
+>
+
+<h2 className="text-3xl font-bold text-purple-700 mb-5">
+Weekly AI Insight
+</h2>
+
+<p className="text-gray-700 text-lg leading-8">
+{weeklyAISummary}
+</p>
+
+</div>
+
+<div
+className="
+mt-10
+bg-white/50
+backdrop-blur-xl
+rounded-[35px]
+shadow-xl
+p-8
+"
+>
+
+<h2 className="text-3xl font-bold text-gray-800 mb-8">
+Pattern Detector
+</h2>
+
+<div className="space-y-5">
+
+{
+
+patternDetector.map(
+
+(pattern,index)=>(
+
+<div
+key={index}
+className="
+bg-purple-50
+rounded-3xl
+p-5
+border
+border-purple-100
+"
+>
+
+<p className="text-gray-700 text-lg leading-8">
+✓ {pattern}
+</p>
+
+</div>
+
+)
+
+)
+
+}
+
+</div>
+
+</div>
 
 </div>
 

@@ -28,6 +28,7 @@ router = APIRouter()
 moods = db["moods"]
 journals = db["journals"]
 reminders = db["reminders"]
+journal_sentiments = db["journal_sentiments"]
 
 @router.get("/analytics-summary/{email}")
 def analytics_summary(
@@ -598,6 +599,144 @@ def analytics_summary(
 
     ) if len(all_reminders) > 0 else 0
 
+    emotion_docs = list(
+
+        journal_sentiments.find(
+
+            {
+
+                "userEmail": email
+
+            }
+
+        )
+
+    )
+
+    emotion_count = {}
+
+    positive_emotions = [
+        "Joy",
+        "Love",
+        "Calm",
+        "Gratitude",
+        "Hope"
+    ]
+
+    negative_emotions = [
+        "Stress",
+        "Sadness",
+        "Anger",
+        "Fear",
+        "Loneliness"
+    ]
+
+    positive_count = 0
+    negative_count = 0
+
+    for doc in emotion_docs:
+
+        emotion = doc.get(
+            "emotion",
+            "Unknown"
+        )
+
+        emotion_count[emotion] = (
+            emotion_count.get(emotion,0)+1
+        )
+
+        if doc["sentiment"] == "Positive":
+
+            positive_count += 1
+
+        elif doc["sentiment"] == "Negative":
+
+            negative_count += 1
+
+
+    emotion_distribution = []
+
+    for emotion,count in emotion_count.items():
+
+        emotion_distribution.append({
+
+            "name": emotion,
+
+            "value": count
+
+        })
+
+    dominant_emotion = (
+        max(
+            emotion_count,
+            key=emotion_count.get
+        )
+        if emotion_count
+        else "No Data"
+    )
+
+    total = positive_count + negative_count
+
+    positive_ratio = round(
+        positive_count/total*100,
+        1
+    ) if total else 0
+
+    stress_index = round(
+        negative_count/total*100,
+        1
+    ) if total else 0
+
+    if stress_index < 25:
+        emotional_stability = "Very Stable"
+
+    elif stress_index < 50:
+        emotional_stability = "Stable"
+
+    elif stress_index < 70:
+        emotional_stability = "Moderate"
+
+    else:
+        emotional_stability = "Needs Support"
+
+    weekly_ai_summary = (
+        f"Your dominant emotion this period was "
+        f"{dominant_emotion}. "
+        f"{positive_ratio}% of your journals reflected positive emotions."
+    )
+
+    pattern_detector = []
+
+    if positive_ratio >= 70:
+
+        pattern_detector.append(
+            "You have maintained a largely positive emotional pattern."
+        )
+
+    if stress_index >= 50:
+
+        pattern_detector.append(
+            "Stress-related emotions appeared frequently."
+        )
+
+    if dominant_emotion == "Gratitude":
+
+        pattern_detector.append(
+            "Gratitude journaling seems to improve your mood."
+        )
+
+    if dominant_emotion == "Love":
+
+        pattern_detector.append(
+            "Relationship experiences are mostly positive."
+        )
+
+    if not pattern_detector:
+
+        pattern_detector.append(
+            "No strong emotional patterns detected yet."
+        )
+
 
     return {
 
@@ -627,7 +766,21 @@ def analytics_summary(
 
         "completedReminders": completed_reminders,
 
-        "completionRate": completion_rate
+        "completionRate": completion_rate,
+
+        "emotionDistribution": emotion_distribution,
+        
+        "dominantEmotion": dominant_emotion,
+        
+        "positiveRatio": positive_ratio,
+        
+        "stressIndex": stress_index,
+        
+        "emotionalStability": emotional_stability,
+        
+        "weeklyAISummary": weekly_ai_summary,
+        
+        "patternDetector": pattern_detector
 
     }
 
