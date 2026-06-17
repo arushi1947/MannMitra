@@ -26,9 +26,11 @@ import MoodTracker from "./pages/MoodTracker";
 import MoodHistory from "./pages/MoodHistory";
 import { MusicProvider } from "./context/MusicContext";
 import GlobalAudio from "./components/GlobalAudio";
+import AIChatWidget from "./components/chat/AIChatWidget";
 import AudioWrapper from "./components/AudioWrapper";
 import Journal from "./pages/Journal";
 import Analytics from "./pages/Analytics";
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <Toaster
@@ -40,6 +42,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <BrowserRouter>
 
         <AudioWrapper />
+
+        <AIChatWidget />
 
         <Routes>
 
