@@ -3,11 +3,13 @@ from database.db import db
 from bson import ObjectId
 from datetime import datetime
 from utils.encryption import (encrypt_text, decrypt_text)
-from routes.ai_insight import generate_profile_insight
+from routes.ai_insight import generate_profile_insight, generate_journal_sentiment
 
 router = APIRouter()
 
 journals = db["journals"]
+
+journal_sentiments = db["journal_sentiments"]
 
 @router.post("/add-journal")
 async def add_journal(journal: dict):
@@ -100,9 +102,54 @@ async def add_journal(journal: dict):
         ).lower()
     }
 
-    journals.insert_one(
+    result = journals.insert_one(
         encrypted_journal
     )
+
+    sentiment = await generate_journal_sentiment(
+
+        journal["title"],
+
+        journal["content"],
+
+        journal.get(
+            "category",
+            "Personal"
+        ),
+
+        journal.get(
+            "mood",
+            ""
+        )
+
+    )
+
+    journal_sentiments.insert_one({
+
+        "userEmail":
+        journal["userEmail"],
+
+        "journalId":
+        str(
+            result.inserted_id
+        ),
+
+        "sentiment":
+        sentiment["sentiment"],
+
+        "emotion":
+        sentiment["emotion"],
+
+        "score":
+        sentiment["score"],
+
+        "insight":
+        sentiment["insight"],
+
+        "createdAt":
+        datetime.utcnow()
+
+    })
 
     await generate_profile_insight(
         journal["userEmail"]
@@ -126,6 +173,25 @@ def get_journals(email: str):
         journal["_id"] = str(
             journal["_id"]
         )
+
+        sentiment = journal_sentiments.find_one(
+
+            {
+
+                "journalId":
+                journal["_id"]
+
+            },
+
+            {
+
+                "_id": 0
+
+            }
+
+        )
+
+        journal["sentiment"] = sentiment
 
         journal["title"] = decrypt_text(
             journal["title"]

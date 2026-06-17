@@ -399,6 +399,115 @@ async def generate_journal_reflection(
 
         }
 
+async def generate_journal_sentiment(
+    title,
+    content,
+    category,
+    mood
+):
+
+    prompt = f"""
+    You are an emotional intelligence assistant.
+
+    Journal Title:
+    {title}
+
+    Category:
+    {category}
+
+    Mood:
+    {mood}
+
+    Content:
+    {content}
+
+    Determine:
+
+    1. sentiment
+    2. dominant emotion
+    3. confidence score
+    4. emotional insight
+
+    Return ONLY valid JSON.
+
+    Example:
+
+    {{
+        "sentiment":"Positive",
+        "emotion":"Gratitude",
+        "score":0.91,
+        "insight":"You seem appreciative and emotionally connected."
+    }}
+
+    Allowed sentiments:
+
+    Positive
+    Neutral
+    Negative
+
+    Allowed emotions:
+
+    Joy
+    Gratitude
+    Calm
+    Stress
+    Anxiety
+    Sadness
+    Anger
+    Hope
+    Love
+    Motivation
+
+    Rules:
+
+    - JSON only
+    - No markdown
+    - Score between 0 and 1
+    - Insight maximum 20 words
+    """
+
+    try:
+
+        response = model.generate_content(
+            prompt
+        )
+
+        clean_response = (
+
+            response.text
+            .replace("```json", "")
+            .replace("```", "")
+            .strip()
+
+        )
+
+        return json.loads(
+            clean_response
+        )
+
+    except Exception as e:
+
+        print(
+            "Sentiment Error:",
+            e
+        )
+
+        return {
+
+            "sentiment":
+            "Neutral",
+
+            "emotion":
+            "Calm",
+
+            "score":
+            0.50,
+
+            "insight":
+            "Continue expressing your thoughts through journaling."
+
+        }
+
 async def update_reminder_ai_insights(email):
 
     reminders = list(

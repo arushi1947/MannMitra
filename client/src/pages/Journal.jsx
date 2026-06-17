@@ -3273,6 +3273,28 @@ function Journal() {
                     </span>
 
                     {
+                    journal.sentiment && (
+
+                    <span
+                    className="
+                    px-3
+                    py-1
+                    rounded-full
+                    bg-pink-100
+                    text-pink-700
+                    text-sm
+                    font-semibold
+                    "
+                    >
+
+                    {journal.sentiment.emotion}
+
+                    </span>
+
+                    )
+                    }
+
+                    {
                     journal.futureLetter && (
 
                     <span
@@ -3524,6 +3546,27 @@ function Journal() {
                 >
                     {journal.mood}
                 </span>
+
+                {
+                journal.sentiment && (
+
+                <span
+                className="
+                px-3
+                py-1
+                rounded-full
+                bg-pink-100
+                text-pink-700
+                text-xs
+                "
+                >
+
+                {journal.sentiment.emotion}
+
+                </span>
+
+                )
+                }
 
                 <p className="text-sm text-gray-500">
 
@@ -4143,6 +4186,102 @@ function Journal() {
     </div>
 
     )
+    }
+
+    {
+    selectedJournal.sentiment && (
+
+    <div
+    className="
+    bg-pink-50
+    rounded-[28px]
+    p-6
+    space-y-5
+    border
+    border-pink-100
+    "
+    >
+
+    <h3 className="text-xl sm:text-2xl font-bold text-pink-700">
+
+    AI Emotional Analysis
+
+    </h3>
+
+    <div>
+
+    <p className="text-gray-500">
+
+    Dominant Emotion
+
+    </p>
+
+    <p className="font-bold">
+
+    {selectedJournal.sentiment.emotion}
+
+    </p>
+
+    </div>
+
+    <div>
+
+    <p className="text-gray-500">
+
+    Sentiment
+
+    </p>
+
+    <p className="font-bold">
+
+    {selectedJournal.sentiment.sentiment}
+
+    </p>
+
+    </div>
+
+    <div>
+
+    <p className="text-gray-500">
+
+    Confidence
+
+    </p>
+
+    <p className="font-bold">
+
+    {
+
+    Math.round(
+    selectedJournal.sentiment.score * 100
+    )
+
+    }%
+
+    </p>
+
+    </div>
+
+    <div>
+
+    <p className="text-gray-500">
+
+    Emotional Insight
+
+    </p>
+
+    <p>
+
+    {selectedJournal.sentiment.insight}
+
+    </p>
+
+    </div>
+
+    </div>
+
+    )
+
     }
 
     </div>
