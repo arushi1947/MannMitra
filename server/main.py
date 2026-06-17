@@ -13,6 +13,7 @@ from routes.monthly_summary import router as monthly_router
 from routes.journal import router as journal_router
 from routes.upload import router as upload_router
 from routes.analytics import router as analytics_router
+from routes.chat import router as chat_router
 
 app = FastAPI()
 
@@ -29,6 +30,7 @@ app.include_router(monthly_router)
 app.include_router(journal_router)
 app.include_router(upload_router)
 app.include_router(analytics_router)
+app.include_router(chat_router, prefix="/api")
 
 app.add_middleware(
     CORSMiddleware,
