@@ -13,7 +13,11 @@ import {
   YAxis,
   Tooltip,
   CartesianGrid,
-  Legend
+  Legend,
+  LineChart,
+  Line,
+  Area,
+  AreaChart
 } from "recharts";
 
 import { FaBars, FaCog, FaSignOutAlt, FaTimes, FaDownload } from "react-icons/fa";
@@ -77,6 +81,14 @@ function Analytics() {
     const [weeklyAISummary, setWeeklyAISummary] = useState("");
     
     const [patternDetector, setPatternDetector] = useState([]);
+
+    const [emotionalGrowth, setEmotionalGrowth] = useState([]);
+
+    const [growthPercentage, setGrowthPercentage] = useState(0);
+
+    const [currentEmotionalScore, setCurrentEmotionalScore] = useState(0);
+
+    const [growthInsight, setGrowthInsight] = useState("");
 
     useEffect(() => {
     
@@ -234,6 +246,22 @@ function Analytics() {
 
         setPatternDetector(
           response.data.patternDetector
+        );
+
+        setEmotionalGrowth(
+          response.data.emotionalGrowth
+        );
+
+        setGrowthPercentage(
+          response.data.growthPercentage
+        );
+
+        setCurrentEmotionalScore(
+          response.data.currentEmotionalScore
+        );
+
+        setGrowthInsight(
+          response.data.growthInsight
         );
 
     }
@@ -1618,6 +1646,26 @@ no-scrollbar
       </h2>
     </div>
 
+    <div className="min-w-[220px] bg-white/50 backdrop-blur-xl rounded-[35px] p-8">
+      <p className="text-gray-500">
+        Emotional Growth
+      </p>
+
+      <h2 className="text-3xl font-bold text-green-500 mt-4">
+        +{growthPercentage}%
+      </h2>
+    </div>
+
+    <div className="min-w-[220px] bg-white/50 backdrop-blur-xl rounded-[35px] p-8">
+      <p className="text-gray-500">
+        Emotional Score
+      </p>
+
+      <h2 className="text-3xl font-bold text-purple-700 mt-4">
+        {currentEmotionalScore}
+      </h2>
+    </div>
+
   </div>
 
   <div
@@ -1651,6 +1699,23 @@ no-scrollbar
         {weeklyAISummary}
       </p>
 
+      <div
+      className="
+      mt-8
+      bg-white/80
+      rounded-3xl
+      p-6
+      shadow-md
+      "
+      >
+        <h3 className="text-2xl font-bold text-green-600">
+          Growth Insight
+        </h3>
+
+        <p className="text-gray-700 mt-4 leading-8">
+          {growthInsight}
+        </p>
+      </div>
 
       <div className="mt-12">
 
@@ -1689,104 +1754,126 @@ no-scrollbar
 
     <div
       className="
-      bg-white/50
+      bg-white/70
       backdrop-blur-xl
       rounded-[40px]
-      p-10
       shadow-xl
-      flex
-      flex-col
+      border
+      border-purple-100
+      p-10
+      h-full
       "
-    >
+      >
 
-      <h2 className="text-4xl font-bold text-gray-800 mb-8">
-        Emotion Distribution
-      </h2>
+      <h3 className="text-2xl font-bold text-gray-800 mb-8">
+        Emotional Growth Trend
+      </h3>
 
-      <div className="flex items-center justify-between gap-8 flex-wrap">
+      <div className="h-[350px]">
 
-        <div className="w-[320px] h-[320px]">
+        <ResponsiveContainer width="100%" height="100%">
 
-            <ResponsiveContainer width="100%" height="100%">
+          <AreaChart
+            data={emotionalGrowth}
+            margin={{
+              top: 20,
+              right: 20,
+              left: -20,
+              bottom: 5
+            }}
+          >
 
-                <PieChart>
+            <defs>
 
-                    <Pie
-                        data={emotionDistribution}
-                        dataKey="value"
-                        nameKey="name"
-                        innerRadius={60}
-                        outerRadius={110}
-                        paddingAngle={3}
-                    >
+              <linearGradient
+                id="growthGradient"
+                x1="0"
+                y1="0"
+                x2="0"
+                y2="1"
+              >
 
-                        {
-                            emotionDistribution.map(
-                                (entry, index) => (
+                <stop
+                  offset="0%"
+                  stopColor="#9333ea"
+                  stopOpacity={0.45}
+                />
 
-                                    <Cell
-                                        key={index}
-                                        fill={COLORS[index % COLORS.length]}
-                                    />
+                <stop
+                  offset="100%"
+                  stopColor="#9333ea"
+                  stopOpacity={0}
+                />
 
-                                )
-                            )
-                        }
+              </linearGradient>
 
-                    </Pie>
+            </defs>
 
-                </PieChart>
+            <CartesianGrid
+              strokeDasharray="4 4"
+              vertical={false}
+              stroke="#e9d5ff"
+            />
 
-            </ResponsiveContainer>
+            <XAxis
+              dataKey="month"
+              tick={{
+                fill: "#6b7280",
+                fontSize: 13
+              }}
+              axisLine={false}
+              tickLine={false}
+            />
 
-        </div>
+            <YAxis
+              domain={[0, 100]}
+              tick={{
+                fill: "#6b7280",
+                fontSize: 13
+              }}
+              axisLine={false}
+              tickLine={false}
+            />
 
-        <div className="space-y-6">
+            <Tooltip
+              cursor={{
+                stroke: "#9333ea",
+                strokeWidth: 1
+              }}
+              contentStyle={{
+                borderRadius: "20px",
+                border: "none",
+                background: "#ffffff",
+                boxShadow:
+                  "0 10px 30px rgba(0,0,0,0.12)"
+              }}
+            />
 
-            {
+            <Area
+              type="monotone"
+              dataKey="score"
+              stroke="#9333ea"
+              strokeWidth={4}
+              fill="url(#growthGradient)"
+              dot={{
+                r: 7,
+                strokeWidth: 3,
+                stroke: "#ffffff",
+                fill: "#9333ea"
+              }}
+              activeDot={{
+                r: 10,
+                strokeWidth: 4,
+                stroke: "#ffffff",
+                fill: "#9333ea"
+              }}
+            />
 
-                emotionDistribution.map(
-                    (emotion, index) => (
+          </AreaChart>
 
-                        <div
-                            key={index}
-                            className="
-                            flex
-                            items-center
-                            gap-4
-                            "
-                        >
+        </ResponsiveContainer>
 
-                            <div
-                                className="w-5 h-5 rounded-full"
-                                style={{
-                                    backgroundColor:
-                                        COLORS[index % COLORS.length]
-                                }}
-                            />
-
-                            <span className="text-lg text-gray-700">
-
-                                {emotion.name}
-
-                            </span>
-
-                            <span className="font-semibold text-gray-500">
-
-                                {emotion.value}%
-
-                            </span>
-
-                        </div>
-
-                    )
-                )
-
-            }
-
-        </div>
-
-    </div>
+      </div>
 
     </div>
 

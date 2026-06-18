@@ -737,6 +737,113 @@ def analytics_summary(
             "No strong emotional patterns detected yet."
         )
 
+    emotion_scores = []
+
+    for doc in emotion_docs:
+
+        score = 50
+
+        if doc.get("sentiment") == "Positive":
+            score = 85
+
+        elif doc.get("sentiment") == "Negative":
+            score = 35
+
+        emotion_scores.append({
+
+            "date": doc["createdAt"],
+
+            "score": score
+
+        })
+
+    emotion_scores.sort(
+        key=lambda x: x["date"]
+    )
+
+    monthly_growth = {}
+
+    for item in emotion_scores:
+
+        month = item["date"].strftime("%b")
+
+        monthly_growth.setdefault(
+            month,
+            []
+        ).append(
+            item["score"]
+        )
+
+    emotional_growth = []
+
+    for month, scores in monthly_growth.items():
+
+        emotional_growth.append({
+
+           "month": month,
+
+           "score": round(
+
+            sum(scores) / len(scores),
+
+                1
+
+            )
+
+        })
+
+    current_emotional_score = (
+
+        emotional_growth[-1]["score"]
+
+        if emotional_growth
+
+        else 0
+
+    )
+
+    if len(emotional_growth) >= 2:
+
+        growth_percentage = round(
+
+            current_emotional_score
+
+            -
+
+            emotional_growth[0]["score"],
+
+            1
+
+        )
+
+    else:
+
+        growth_percentage = 0
+
+
+    if growth_percentage > 15:
+
+        growth_insight = (
+           "Your emotional wellbeing is improving steadily."
+        )
+
+    elif growth_percentage > 0:
+
+        growth_insight = (
+           "You are showing positive emotional progress."
+        )
+
+    elif growth_percentage < 0:
+
+        growth_insight = (
+           "Recent emotions indicate some decline. Practice self-care."
+        )
+
+    else:
+
+        growth_insight = (
+           "Not enough emotional history yet."
+        )
 
     return {
 
@@ -780,7 +887,15 @@ def analytics_summary(
         
         "weeklyAISummary": weekly_ai_summary,
         
-        "patternDetector": pattern_detector
+        "patternDetector": pattern_detector,
+
+        "emotionalGrowth": emotional_growth,
+
+        "growthPercentage": growth_percentage,
+
+        "currentEmotionalScore": current_emotional_score,
+
+        "growthInsight": growth_insight
 
     }
 
