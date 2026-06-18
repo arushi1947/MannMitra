@@ -845,6 +845,67 @@ def analytics_summary(
            "Not enough emotional history yet."
         )
 
+    burnout_score = 0
+
+    burnout_reasons = []
+
+    if stress_index >= 70:
+
+        burnout_score += 40
+
+        burnout_reasons.append(
+            "High amount of stress-related emotions detected."
+        )
+
+    elif stress_index >= 50:
+
+        burnout_score += 25
+
+        burnout_reasons.append(
+            "Stress emotions appeared frequently."
+        )
+
+    if positive_ratio <= 40:
+
+        burnout_score += 25
+
+        burnout_reasons.append(
+            "Low positivity in journal entries."
+        )
+
+    if growth_percentage < 0:
+
+        burnout_score += 20
+
+        burnout_reasons.append(
+            "Emotional growth has declined recently."
+        )
+
+    if emotional_stability == "Needs Support":
+
+        burnout_score += 15
+
+        burnout_reasons.append(
+            "Emotional stability requires attention."
+        )
+
+    burnout_score = min(
+        burnout_score,
+        100
+    )
+
+    if burnout_score < 30:
+
+        burnout_risk = "Low"
+
+    elif burnout_score < 60:
+
+        burnout_risk = "Moderate"
+
+    else:
+
+        burnout_risk = "High"
+
     return {
 
         "currentStreak": streak,
@@ -895,7 +956,13 @@ def analytics_summary(
 
         "currentEmotionalScore": current_emotional_score,
 
-        "growthInsight": growth_insight
+        "growthInsight": growth_insight,
+
+        "burnoutScore": burnout_score,
+
+        "burnoutRisk": burnout_risk,
+
+        "burnoutReasons": burnout_reasons
 
     }
 

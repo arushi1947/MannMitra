@@ -90,6 +90,12 @@ function Analytics() {
 
     const [growthInsight, setGrowthInsight] = useState("");
 
+    const [burnoutScore, setBurnoutScore] = useState(0);
+
+    const [burnoutRisk, setBurnoutRisk] = useState("");
+
+    const [burnoutReasons, setBurnoutReasons] = useState([]);
+
     useEffect(() => {
     
       const handleResize = () => {
@@ -262,6 +268,18 @@ function Analytics() {
 
         setGrowthInsight(
           response.data.growthInsight
+        );
+
+        setBurnoutScore(
+          response.data.burnoutScore
+        );
+
+        setBurnoutRisk(
+          response.data.burnoutRisk
+        );
+
+        setBurnoutReasons(
+          response.data.burnoutReasons
         );
 
     }
@@ -1666,6 +1684,52 @@ no-scrollbar
       </h2>
     </div>
 
+    <div className="min-w-[220px] bg-white/50 backdrop-blur-xl rounded-[35px] p-8">
+
+      <p className="text-gray-500">
+
+        Burnout Risk
+
+      </p>
+
+      <h2
+        className={`
+          text-3xl
+          font-bold
+          mt-4
+
+          ${
+            burnoutRisk === "Low"
+              ? "text-green-500"
+              : burnoutRisk === "Moderate"
+              ? "text-orange-500"
+              : "text-red-500"
+          }
+        `}
+      >
+
+        {burnoutRisk}
+
+      </h2>
+
+    </div>
+
+    <div className="min-w-[220px] bg-white/50 backdrop-blur-xl rounded-[35px] p-8">
+
+      <p className="text-gray-500">
+
+        Burnout Score
+
+      </p>
+
+      <h2 className="text-3xl font-bold text-purple-700 mt-4">
+
+        {burnoutScore}/100
+
+      </h2>
+
+    </div>
+
   </div>
 
   <div
@@ -1718,6 +1782,44 @@ no-scrollbar
       </div>
 
       <div className="mt-12">
+
+        <h3 className="text-2xl font-bold text-red-500 mb-6">
+
+          Burnout Indicators
+
+        </h3>
+
+        <div className="space-y-4 mb-10">
+
+          {
+
+            burnoutReasons.map((reason,index)=>(
+
+              <div
+                key={index}
+                className="
+                bg-red-50
+                rounded-3xl
+                px-6
+                py-5
+                border
+                border-red-100
+                "
+              >
+
+                <p className="text-gray-700">
+
+                  ⚠️ {reason}
+
+                </p>
+
+              </div>
+
+            ))
+
+          }
+
+        </div>
 
         <h3 className="text-2xl font-bold text-gray-800 mb-6">
           Pattern Highlights
