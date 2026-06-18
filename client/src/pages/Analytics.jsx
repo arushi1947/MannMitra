@@ -96,6 +96,10 @@ function Analytics() {
 
     const [burnoutReasons, setBurnoutReasons] = useState([]);
 
+    const [cognitiveWellnessScore, setCognitiveWellnessScore] = useState(0);
+
+    const [cognitiveLabel, setCognitiveLabel] = useState("");
+
     useEffect(() => {
     
       const handleResize = () => {
@@ -282,6 +286,14 @@ function Analytics() {
           response.data.burnoutReasons
         );
 
+        setCognitiveWellnessScore(
+            response.data.cognitiveWellnessScore
+        );
+
+        setCognitiveLabel(
+            response.data.cognitiveLabel
+        );
+
     }
 
     catch (error) {
@@ -380,40 +392,6 @@ function Analytics() {
       (unlockedCount / achievements.length) * 100
     );
 
-    const wellnessScore = Math.round(
-
-      (
-        averageMoodScore * 20 +
-
-        completionRate +
-
-        Math.min(currentStreak * 2, 20) +
-
-        Math.min(totalEntries * 2, 20)
-      ) / 1.6
-
-    );
-
-    const wellnessLabel =
-
-      wellnessScore >= 85
-
-        ? "Excellent 🌸"
-
-        : wellnessScore >= 70
-
-        ? "Very Good ✨"
-
-        : wellnessScore >= 55
-
-        ? "Good 🌷"
-
-        : wellnessScore >= 40
-
-        ? "Needs Attention 🌿"
-
-        : "Low ❤️";
-
     const downloadWellnessReport = async () => {
 
       try {
@@ -455,6 +433,36 @@ function Analytics() {
       }
 
     };
+
+    const getStressColor = () => {
+
+    if (stressIndex < 25)
+      return "from-green-500 to-emerald-400";
+
+    if (stressIndex < 50)
+      return "from-blue-500 to-cyan-400";
+
+    if (stressIndex < 70)
+      return "from-orange-500 to-yellow-400";
+
+    return "from-red-500 to-pink-500";
+
+  };
+
+  const getStressMessage = () => {
+
+    if (stressIndex < 25)
+      return "You appear emotionally balanced.";
+
+    if (stressIndex < 50)
+      return "Your stress level is manageable.";
+
+    if (stressIndex < 70)
+      return "Take breaks and prioritize self-care.";
+
+    return "Recent activity suggests elevated stress.";
+
+  };
 
 return (
     <>
@@ -814,13 +822,13 @@ p-10
 
     <h1 className="text-3xl md:text-5xl font-bold text-center text-gray-800">
 
-        Your Wellness Journey
+        Your Cognitive Wellness Journey
 
     </h1>
 
     <p className="text-center text-gray-500 mt-3 text-lg">
 
-        A snapshot of your emotional health and productivity
+        A holistic view of your emotional resilience and healthy habits
 
     </p>
 
@@ -940,6 +948,121 @@ p-10
 
         </div>
 
+        <div
+        className="
+        mt-6
+        bg-white/70
+        backdrop-blur-xl
+        rounded-[40px]
+        shadow-xl
+        overflow-hidden
+        max-w-[400px]
+        "
+        >
+
+        <div
+        className={`
+        bg-gradient-to-r
+        ${getStressColor()}
+        p-6
+        text-white
+        `}
+        >
+
+        <h2 className="text-2xl font-bold">
+
+        Stress Index
+
+        </h2>
+
+        <p className="opacity-90 mt-2">
+
+        Mental and emotional strain level
+
+        </p>
+
+        </div>
+
+        <div className="p-8">
+
+        <div className="flex items-center gap-6">
+
+        <div
+        className={`
+        w-28
+        h-28
+        rounded-full
+        bg-gradient-to-r
+        ${getStressColor()}
+        flex
+        items-center
+        justify-center
+        shadow-xl
+        `}
+        >
+
+        <h1 className="text-4xl font-bold text-white">
+
+        {stressIndex}
+
+        </h1>
+
+        </div>
+
+        <div>
+
+        <h2 className="text-3xl font-bold text-gray-800">
+
+        {emotionalStability}
+
+        </h2>
+
+        <p className="text-gray-500 mt-3">
+
+        {getStressMessage()}
+
+        </p>
+
+        </div>
+
+        </div>
+
+        <div className="mt-8">
+
+        <div className="flex justify-between text-sm text-gray-500 mb-2">
+
+        <span>Low</span>
+
+        <span>Moderate</span>
+
+        <span>High</span>
+
+        </div>
+
+        <div className="w-full h-4 rounded-full bg-gray-200 overflow-hidden">
+
+        <div
+        className={`
+        h-full
+        bg-gradient-to-r
+        ${getStressColor()}
+        rounded-full
+        transition-all
+        duration-700
+        `}
+        style={{
+        width: `${stressIndex}%`
+        }}
+        />
+
+        </div>
+
+        </div>
+
+        </div>
+
+        </div>
+
     </div>
 
     <div className="flex flex-col items-center">
@@ -964,7 +1087,7 @@ p-10
         >
 
             <h1 className="text-5xl sm:text-7xl font-bold">
-                {wellnessScore}
+                {cognitiveWellnessScore}
             </h1>
 
             <p className="text-xl">
@@ -974,7 +1097,7 @@ p-10
         </div>
 
         <h2 className="text-2xl sm:text-4xl font-bold text-gray-800 mt-6">
-            {wellnessLabel}
+            {cognitiveLabel}
         </h2>
 
         <p className="text-gray-500 mt-3">
@@ -1647,13 +1770,6 @@ no-scrollbar
       <p className="text-gray-500">Positive Ratio</p>
       <h2 className="text-3xl font-bold text-green-500 mt-4">
         {positiveRatio}%
-      </h2>
-    </div>
-
-    <div className="min-w-[220px] bg-white/50 backdrop-blur-xl rounded-[35px] p-8">
-      <p className="text-gray-500">Stress Index</p>
-      <h2 className="text-3xl font-bold text-red-500 mt-4">
-        {stressIndex}%
       </h2>
     </div>
 

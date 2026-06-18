@@ -682,10 +682,43 @@ def analytics_summary(
         1
     ) if total else 0
 
+    stress_from_mood = (
+        (5 - average_mood_score)
+        * 20
+    )
+
+    stress_from_reminders = (
+        100 - completion_rate
+    )
+
+    journal_stress = (
+
+        negative_count
+        /
+        total
+        * 100
+
+    ) if total else 50
+
     stress_index = round(
-        negative_count/total*100,
+
+        (
+
+            stress_from_mood * 0.5
+
+            +
+
+            stress_from_reminders * 0.3
+
+            +
+
+            journal_stress * 0.2
+
+        ),
+
         1
-    ) if total else 0
+
+    )
 
     if stress_index < 25:
         emotional_stability = "Very Stable"
@@ -734,7 +767,7 @@ def analytics_summary(
     if not pattern_detector:
 
         pattern_detector.append(
-            "No strong emotional patterns detected yet."
+            "Healthy habits are supporting your emotional wellbeing."
         )
 
     emotion_scores = []
@@ -849,7 +882,25 @@ def analytics_summary(
 
     burnout_reasons = []
 
-    if stress_index >= 70:
+    if average_mood_score < 3:
+
+        burnout_reasons.append(
+            "Recent moods have been lower than usual."
+        )
+
+    if completion_rate < 60:
+
+        burnout_reasons.append(
+            "Many reminders are being missed."
+        )
+
+    if journal_stress > 60:
+
+        burnout_reasons.append(
+            "Journal sentiment indicates emotional strain."
+        )
+
+    if stress_index >= 80:
 
         burnout_score += 40
 
@@ -857,7 +908,7 @@ def analytics_summary(
             "High amount of stress-related emotions detected."
         )
 
-    elif stress_index >= 50:
+    elif stress_index >= 60:
 
         burnout_score += 25
 
@@ -902,9 +953,117 @@ def analytics_summary(
 
         burnout_risk = "Moderate"
 
-    else:
+    elif burnout_score < 85:
 
         burnout_risk = "High"
+
+    else:
+
+        burnout_risk = "Burnout Risk"
+
+    mood_component = (
+        average_mood_score / 5
+    ) * 100
+
+    journal_dates = set()
+
+    for journal in journal_docs:
+
+        journal_dates.add(
+
+            journal["createdAt"].strftime(
+                "%Y-%m-%d"
+            )
+
+        )
+
+    active_journal_days = len(
+        journal_dates
+    )
+
+    journal_consistency = min(
+
+        active_journal_days * 4,
+
+        100
+
+    )
+
+    if streak >= 30:
+
+        streak_score = 100
+
+    elif streak >= 21:
+
+        streak_score = 85
+
+    elif streak >= 14:
+
+        streak_score = 70
+
+    elif streak >= 7:
+
+        streak_score = 50
+
+    elif streak >= 3:
+
+        streak_score = 25
+
+    else:
+
+        streak_score = 10
+        
+    cognitive_wellness_score = round(
+
+        (
+
+            (100 - stress_index) * 0.25
+
+            +
+
+            (100 - burnout_score) * 0.20
+
+            +
+
+            mood_component * 0.20
+
+            +
+
+            completion_rate * 0.15
+
+            +
+
+            journal_consistency * 0.10
+
+            +
+
+            streak_score * 0.10
+
+        ),
+
+        0
+
+    )
+
+    if cognitive_wellness_score >= 90:
+
+        cognitive_label = "Excellent"
+
+    elif cognitive_wellness_score >= 75:
+
+        cognitive_label = "Very Good"
+
+    elif cognitive_wellness_score >= 60:
+
+        cognitive_label = "Good"
+
+    elif cognitive_wellness_score >= 40:
+
+        cognitive_label = "Needs Attention"
+
+    else:
+
+        cognitive_label = "Low"
 
     return {
 
@@ -962,7 +1121,11 @@ def analytics_summary(
 
         "burnoutRisk": burnout_risk,
 
-        "burnoutReasons": burnout_reasons
+        "burnoutReasons": burnout_reasons,
+
+        "cognitiveWellnessScore": cognitive_wellness_score,
+
+        "cognitiveLabel": cognitive_label
 
     }
 
