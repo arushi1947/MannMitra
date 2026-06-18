@@ -7,6 +7,7 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import API from "../services/api";
+import DailySummaryCard from "../components/DailySummaryCard";
 import {
   FaPlus,
   FaSmile,
@@ -2174,6 +2175,7 @@ function Dashboard() {
             <div
               className={`
                 relative
+                lg:mt-20
                 rounded-[24px]
                 border
                 ${
@@ -2209,6 +2211,13 @@ function Dashboard() {
               </div>
             </div>
           </div>
+
+          <DailySummaryCard
+              cardStyle={cardStyle}
+              primaryText={primaryText}
+              secondaryText={secondaryText}
+              isNight={isNight}
+          />
 
           <div
             className={`
