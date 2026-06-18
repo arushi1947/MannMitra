@@ -13,6 +13,7 @@ import {
   YAxis,
   Tooltip,
   CartesianGrid,
+  Legend
 } from "recharts";
 
 import { FaBars, FaCog, FaSignOutAlt, FaTimes, FaDownload } from "react-icons/fa";
@@ -1568,197 +1569,228 @@ no-scrollbar
 
 <div className="mt-20">
 
-<h2 className="text-4xl font-bold text-center text-gray-800">
+  <h2 className="text-4xl font-bold text-center text-gray-800">
     Journal Sentiment Insights
-</h2>
+  </h2>
 
-<p className="text-center text-gray-500 mt-3">
+  <p className="text-center text-gray-500 mt-3">
     Understand your emotional patterns through your journal entries
-</p>
+  </p>
 
-<div
-className="
-mt-10
+  <div
+    className="
+    flex
+    gap-5
+    overflow-x-auto
+    no-scrollbar
+    mt-10
 
-flex
-overflow-x-auto
-gap-5
-pb-4
+    lg:grid
+    lg:grid-cols-4
+    "
+  >
 
-lg:grid
-lg:grid-cols-4
+    <div className="min-w-[220px] bg-white/50 backdrop-blur-xl rounded-[35px] p-8">
+      <p className="text-gray-500">Dominant Emotion</p>
+      <h2 className="text-3xl font-bold text-pink-500 mt-4">
+        {dominantEmotion}
+      </h2>
+    </div>
 
-snap-x
-no-scrollbar
-"
->
+    <div className="min-w-[220px] bg-white/50 backdrop-blur-xl rounded-[35px] p-8">
+      <p className="text-gray-500">Positive Ratio</p>
+      <h2 className="text-3xl font-bold text-green-500 mt-4">
+        {positiveRatio}%
+      </h2>
+    </div>
 
-<div
-className="
-min-w-[240px]
-snap-start
-bg-white/50
-backdrop-blur-xl
-rounded-[35px]
-p-8
-shadow-xl
-"
->
+    <div className="min-w-[220px] bg-white/50 backdrop-blur-xl rounded-[35px] p-8">
+      <p className="text-gray-500">Stress Index</p>
+      <h2 className="text-3xl font-bold text-red-500 mt-4">
+        {stressIndex}%
+      </h2>
+    </div>
 
-<p className="text-gray-500">
-Dominant Emotion
-</p>
+    <div className="min-w-[220px] bg-white/50 backdrop-blur-xl rounded-[35px] p-8">
+      <p className="text-gray-500">Emotional Stability</p>
+      <h2 className="text-2xl font-bold text-purple-600 mt-4">
+        {emotionalStability}
+      </h2>
+    </div>
 
-<h2 className="text-3xl font-bold text-pink-500 mt-4">
-{dominantEmotion}
-</h2>
+  </div>
 
-</div>
+  <div
+    className="
+    grid
+    lg:grid-cols-2
+    gap-8
+    mt-12
+    items-stretch
+    "
+  >
 
+    <div
+      className="
+      bg-gradient-to-r
+      from-purple-50
+      to-pink-50
+      rounded-[40px]
+      p-10
+      shadow-xl
+      border
+      border-purple-100
+      "
+    >
 
-<div
-className="
-min-w-[240px]
-snap-start
-bg-white/50
-backdrop-blur-xl
-rounded-[35px]
-p-8
-shadow-xl
-"
->
+      <h2 className="text-4xl font-bold text-purple-700">
+        Weekly AI Insight
+      </h2>
 
-<p className="text-gray-500">
-Positive Ratio
-</p>
-
-<h2 className="text-3xl font-bold text-green-500 mt-4">
-{positiveRatio}%
-</h2>
-
-</div>
-
-
-<div
-className="
-min-w-[240px]
-snap-start
-bg-white/50
-backdrop-blur-xl
-rounded-[35px]
-p-8
-shadow-xl
-"
->
-
-<p className="text-gray-500">
-Stress Index
-</p>
-
-<h2 className="text-3xl font-bold text-red-500 mt-4">
-{stressIndex}%
-</h2>
-
-</div>
+      <p className="text-gray-700 text-lg leading-9 mt-8">
+        {weeklyAISummary}
+      </p>
 
 
-<div
-className="
-min-w-[240px]
-snap-start
-bg-white/50
-backdrop-blur-xl
-rounded-[35px]
-p-8
-shadow-xl
-"
->
+      <div className="mt-12">
 
-<p className="text-gray-500">
-Emotional Stability
-</p>
+        <h3 className="text-2xl font-bold text-gray-800 mb-6">
+          Pattern Highlights
+        </h3>
 
-<h2 className="text-2xl font-bold text-purple-600 mt-4">
-{emotionalStability}
-</h2>
+        <div className="space-y-4">
 
-</div>
+          {
+            patternDetector.map((pattern, index) => (
 
-</div>
+              <div
+                key={index}
+                className="
+                bg-white/80
+                rounded-3xl
+                px-6
+                py-5
+                shadow-md
+                "
+              >
+                <p className="text-gray-700 text-lg">
+                  ✓ {pattern}
+                </p>
+              </div>
 
-<div
-className="
-mt-10
-bg-gradient-to-r
-from-purple-50
-to-pink-50
-rounded-[35px]
-p-8
-shadow-xl
-border
-border-purple-100
-"
->
+            ))
+          }
 
-<h2 className="text-3xl font-bold text-purple-700 mb-5">
-Weekly AI Insight
-</h2>
+        </div>
 
-<p className="text-gray-700 text-lg leading-8">
-{weeklyAISummary}
-</p>
+      </div>
 
-</div>
+    </div>
 
-<div
-className="
-mt-10
-bg-white/50
-backdrop-blur-xl
-rounded-[35px]
-shadow-xl
-p-8
-"
->
+    <div
+      className="
+      bg-white/50
+      backdrop-blur-xl
+      rounded-[40px]
+      p-10
+      shadow-xl
+      flex
+      flex-col
+      "
+    >
 
-<h2 className="text-3xl font-bold text-gray-800 mb-8">
-Pattern Detector
-</h2>
+      <h2 className="text-4xl font-bold text-gray-800 mb-8">
+        Emotion Distribution
+      </h2>
 
-<div className="space-y-5">
+      <div className="flex items-center justify-between gap-8 flex-wrap">
 
-{
+        <div className="w-[320px] h-[320px]">
 
-patternDetector.map(
+            <ResponsiveContainer width="100%" height="100%">
 
-(pattern,index)=>(
+                <PieChart>
 
-<div
-key={index}
-className="
-bg-purple-50
-rounded-3xl
-p-5
-border
-border-purple-100
-"
->
+                    <Pie
+                        data={emotionDistribution}
+                        dataKey="value"
+                        nameKey="name"
+                        innerRadius={60}
+                        outerRadius={110}
+                        paddingAngle={3}
+                    >
 
-<p className="text-gray-700 text-lg leading-8">
-✓ {pattern}
-</p>
+                        {
+                            emotionDistribution.map(
+                                (entry, index) => (
 
-</div>
+                                    <Cell
+                                        key={index}
+                                        fill={COLORS[index % COLORS.length]}
+                                    />
 
-)
+                                )
+                            )
+                        }
 
-)
+                    </Pie>
 
-}
+                </PieChart>
 
-</div>
+            </ResponsiveContainer>
 
-</div>
+        </div>
+
+        <div className="space-y-6">
+
+            {
+
+                emotionDistribution.map(
+                    (emotion, index) => (
+
+                        <div
+                            key={index}
+                            className="
+                            flex
+                            items-center
+                            gap-4
+                            "
+                        >
+
+                            <div
+                                className="w-5 h-5 rounded-full"
+                                style={{
+                                    backgroundColor:
+                                        COLORS[index % COLORS.length]
+                                }}
+                            />
+
+                            <span className="text-lg text-gray-700">
+
+                                {emotion.name}
+
+                            </span>
+
+                            <span className="font-semibold text-gray-500">
+
+                                {emotion.value}%
+
+                            </span>
+
+                        </div>
+
+                    )
+                )
+
+            }
+
+        </div>
+
+    </div>
+
+    </div>
+
+  </div>
 
 </div>
 
