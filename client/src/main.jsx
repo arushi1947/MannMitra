@@ -30,6 +30,8 @@ import AIChatWidget from "./components/chat/AIChatWidget";
 import AudioWrapper from "./components/AudioWrapper";
 import Journal from "./pages/Journal";
 import Analytics from "./pages/Analytics";
+import BreathingExercise from "./pages/BreathingExercise";
+import MeditationPage from "./pages/MeditationPage";
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -146,6 +148,24 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             <Analytics />
           </ProtectedRoute>
         }
+        />
+
+        <Route
+          path="/breathing"
+          element={
+            <ProtectedRoute>
+              <BreathingExercise />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/meditation"
+          element={
+            <ProtectedRoute>
+              <MeditationPage />
+            </ProtectedRoute>
+          }
         />
 
         </Routes>

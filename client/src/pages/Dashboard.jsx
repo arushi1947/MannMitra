@@ -23,7 +23,9 @@ import {
   FaFire,
   FaAngleRight,
   FaChevronDown,
-  FaBars
+  FaBars,
+  FaWind,
+  FaSpa
 } from "react-icons/fa";
 
 function Dashboard() {
@@ -2141,6 +2143,168 @@ function Dashboard() {
               transition
               cursor-pointer
             "
+            >
+              <FaAngleRight className="text-gray-400 text-xl" />
+            </button>
+
+          </div>
+
+          <div
+            className={`
+              ${cardStyle}
+              rounded-[24px]
+              p-5
+              flex
+              items-center
+              justify-between
+              cursor-pointer
+            `}
+          >
+
+            <div className="flex items-center gap-4">
+
+              <div
+                className="
+                  w-14
+                  h-14
+                  rounded-2xl
+
+                  bg-gradient-to-r
+                  from-cyan-500
+                  to-blue-400
+
+                  flex
+                  items-center
+                  justify-center
+
+                  shadow-lg
+                "
+              >
+                <FaWind className="text-white text-xl" />
+              </div>
+
+              <div>
+
+                <h3
+                  className={`
+                    font-bold
+                    text-lg
+                    ${primaryText}
+                  `}
+                >
+                  Breathing Exercise
+                </h3>
+
+                <p
+                  className={`
+                    text-sm
+                    ${secondaryText}
+                  `}
+                >
+                  Relax and reduce stress
+                </p>
+
+              </div>
+
+            </div>
+
+            <button
+              onClick={() => navigate("/breathing")}
+              className="
+                w-10
+                h-10
+                rounded-full
+
+                flex
+                items-center
+                justify-center
+
+                hover:bg-purple-100
+
+                transition
+                cursor-pointer
+              "
+            >
+              <FaAngleRight className="text-gray-400 text-xl" />
+            </button>
+
+          </div>
+
+          <div
+            className={`
+              ${cardStyle}
+              rounded-[24px]
+              p-5
+              flex
+              items-center
+              justify-between
+              cursor-pointer
+            `}
+          >
+
+            <div className="flex items-center gap-4">
+
+              <div
+                className="
+                  w-14
+                  h-14
+                  rounded-2xl
+
+                  bg-gradient-to-r
+                  from-purple-500
+                  to-pink-500
+
+                  flex
+                  items-center
+                  justify-center
+
+                  shadow-lg
+                "
+              >
+                <FaSpa className="text-white text-xl" />
+              </div>
+
+              <div>
+
+                <h3
+                  className={`
+                    font-bold
+                    text-lg
+                    ${primaryText}
+                  `}
+                >
+                  Meditation
+                </h3>
+
+                <p
+                  className={`
+                    text-sm
+                    ${secondaryText}
+                  `}
+                >
+                  Calm your mind and focus
+                </p>
+
+              </div>
+
+            </div>
+
+            <button
+              onClick={() => navigate("/meditation")}
+              className="
+                w-10
+                h-10
+                rounded-full
+
+                flex
+                items-center
+                justify-center
+
+                hover:bg-purple-100
+
+                transition
+                cursor-pointer
+              "
             >
               <FaAngleRight className="text-gray-400 text-xl" />
             </button>

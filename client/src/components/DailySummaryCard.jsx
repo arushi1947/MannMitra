@@ -94,6 +94,7 @@ function DailySummaryCard({
                 justify-center
 
                 text-xl
+                text-black
               "
             >
               ✓
