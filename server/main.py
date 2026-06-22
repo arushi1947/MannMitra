@@ -15,6 +15,7 @@ from routes.upload import router as upload_router
 from routes.analytics import router as analytics_router
 from routes.chat import router as chat_router
 from routes.daily_summary import router as daily_summary_router
+from routes.voice_parser import router as voice_router
 
 app = FastAPI()
 
@@ -33,6 +34,7 @@ app.include_router(upload_router)
 app.include_router(analytics_router)
 app.include_router(chat_router, prefix="/api")
 app.include_router(daily_summary_router)
+app.include_router(voice_router, prefix="/api")
 
 app.add_middleware(
     CORSMiddleware,

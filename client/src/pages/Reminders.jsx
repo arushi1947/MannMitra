@@ -9,7 +9,8 @@ import {
   FaCog,
   FaSignOutAlt,
   FaBars,
-  FaTimes
+  FaTimes,
+  FaMicrophone
 } from "react-icons/fa";
 
 function Reminders() {
@@ -27,6 +28,10 @@ function Reminders() {
   const [date, setDate] = useState("");
 
   const [time, setTime] = useState("");
+
+  const [isListening, setIsListening] = useState(false);
+
+  const [repeat, setRepeat] = useState("none");
 
   const [category, setCategory] = useState("Work");
 
@@ -299,7 +304,7 @@ const fetchReminderInsights = async () => {
           date,
           time,
           priority,
-
+          repeat,
           completed: false,
 
           userEmail: user.email
@@ -437,6 +442,96 @@ const fetchReminderInsights = async () => {
     setEditId(reminder._id);
 
     setIsEditing(true);
+  };
+
+  const startVoiceInput = () => {
+
+    const SpeechRecognition =
+      window.SpeechRecognition ||
+      window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+
+      toast.error(
+        "Speech recognition not supported"
+      );
+
+      return;
+
+    }
+
+    const recognition =
+      new SpeechRecognition();
+
+    recognition.lang = "hi-IN";
+
+    recognition.interimResults = false;
+
+    setIsListening(true);
+
+    recognition.start();
+
+    recognition.onresult = async (event) => {
+
+      const transcript = event.results[0][0].transcript;
+
+      console.log("Voice:", transcript);
+
+      try {
+
+        const response = await API.post(
+          "/api/parse-voice",
+          {
+            text: transcript
+          }
+        );
+
+        const data = response.data;
+
+        setTitle(data.title);
+
+        setDate(data.date);
+
+        setTime(data.time);
+
+        setRepeat(data.repeat);
+
+        toast.success(
+          "Voice reminder created 🎤"
+        );
+
+      }
+
+      catch (error) {
+
+        console.log(error);
+
+        toast.error(
+          "Couldn't understand command"
+        );
+
+      }
+
+      setIsListening(false);
+
+    };
+
+    recognition.onerror = () => {
+
+      setIsListening(false);
+
+      toast.error(
+        "Could not recognize voice"
+      );
+
+    };
+
+    recognition.onend = () => {
+
+      setIsListening(false);
+
+    };
+
   };
 
   const filteredReminders = reminders.filter((reminder) => {
@@ -1421,12 +1516,15 @@ const fetchReminderInsights = async () => {
             onSubmit={addReminder}
             className="grid grid-cols-1 md:grid-cols-2 gap-6"
           >
-
+            <div className="relative md:col-span-2">
             <input
               type="text"
               placeholder="Reminder Title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
               className="
                 p-4
+                w-full
                 rounded-2xl
                 bg-white/70
                 border
@@ -1436,9 +1534,36 @@ const fetchReminderInsights = async () => {
                 focus:ring-purple-300
                 transition-all
               "
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              
             />
+
+              <button
+                type="button"
+                onClick={startVoiceInput}
+                className={`
+                  absolute
+                  right-6
+                  top-1/2
+                  -translate-y-1/2
+                  flex
+                  items-center
+                  justify-center
+                  text-2xl
+                  transition-all
+                  duration-300
+                  cursor-pointer
+
+                  ${
+                    isListening
+                      ? "bg-red-500 animate-pulse scale-110"
+                      : "text-purple-600 hover:text-fuschia-500 hover:scale-110"
+                  }
+                `}
+              >
+                <FaMicrophone />
+              </button>
+
+            </div>
 
             <input
               type="text"

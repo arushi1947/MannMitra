@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import Sidebar from "../components/Sidebar";
-import { FaBars, FaTimes, FaCog, FaSignOutAlt } from "react-icons/fa";
+import { FaBars, FaTimes, FaCog, FaSignOutAlt, FaMicrophone } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import API from "../services/api";
 
@@ -2539,25 +2539,27 @@ function Journal() {
             <button
                 type="button"
                 onClick={() => setShowVoiceModal(true)}
-                className="
+                className={`
                     absolute
-                    bottom-5
-                    right-5
-                    w-12 h-12
-                    sm:w-14 sm:h-14
-                    rounded-full
-                    bg-gradient-to-r
-                    from-purple-600
-                    to-fuchsia-500
-                    text-white
-                    text-xl sm:text-2xl
-                    shadow-lg
-                    hover:scale-110
+                    right-3
+                    bottom-1
+                    -translate-y-1/2
+                    flex
+                    items-center
+                    justify-center
+                    text-2xl
                     transition-all
+                    duration-300
                     cursor-pointer
-                "
+
+                    ${
+                        isListening
+                        ? "bg-red-500 animate-pulse scale-110"
+                        : "text-purple-600 hover:text-fuschia-500 hover:scale-110"
+                    }
+                    `}
             >
-                🎙
+                <FaMicrophone />
             </button>
 
         </div>
