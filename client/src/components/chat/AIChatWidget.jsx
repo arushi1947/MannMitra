@@ -25,6 +25,15 @@ function AIChatWidget() {
     location.pathname === "/reminders" ||
     location.pathname === "/mood";
 
+  const hiddenRoutes = [
+    "/",
+    "/login",
+    "/register",
+    "/forgot-password",
+    "/terms",
+    "/privacy"
+  ];
+
   useEffect(() => {
 
     if (
@@ -245,6 +254,13 @@ function AIChatWidget() {
     }
 
   };
+
+  const shouldHide =
+    hiddenRoutes.includes(location.pathname) ||
+    location.pathname.startsWith("/reset-password") ||
+    location.pathname.startsWith("/reset-pin");
+
+  if (shouldHide) return null;
 
   return (
 

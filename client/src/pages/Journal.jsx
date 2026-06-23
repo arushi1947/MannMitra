@@ -56,6 +56,14 @@ function Journal() {
     const [futureLettersReady, setFutureLettersReady] = useState([]);
     const [futureLettersLocked, setFutureLettersLocked] = useState([]);
     const [showMailboxModal, setShowMailboxModal] = useState(false);
+    const [showCrisisModal, setShowCrisisModal] = useState(false);
+    const [crisisLevel, setCrisisLevel] = useState("");
+    const [crisisReason, setCrisisReason] = useState("");
+    const [crisisRecommendation, setCrisisRecommendation] = useState("");
+    const [supportPlan, setSupportPlan] = useState({});
+    const [breathPhase, setBreathPhase] = useState("Inhale");
+    const [breathScale, setBreathScale] = useState(1);
+    const [crisisStep,setCrisisStep] = useState(1);
     const [showMailNotification, setShowMailNotification] = useState(() => {
 
         const seenCount = Number(localStorage.getItem("seenLettersCount") || 0);
@@ -100,6 +108,57 @@ function Journal() {
         window.removeEventListener("resize", handleResize);
 
     }, []);
+
+   useEffect(() => {
+
+        if (
+            !showCrisisModal ||
+            crisisStep !== 2
+        )
+            return;
+
+        const phases = [
+
+            {
+                text: "Inhale",
+                scale: 1.25
+            },
+
+            {
+                text: "Hold",
+                scale: 1.25
+            },
+
+            {
+                text: "Exhale",
+                scale: 1
+            }
+
+        ];
+
+        let index = 0;
+
+        setBreathPhase(phases[0].text);
+        setBreathScale(phases[0].scale);
+
+        const interval = setInterval(() => {
+
+            index = (index + 1) % phases.length;
+
+            setBreathPhase(
+                phases[index].text
+            );
+
+            setBreathScale(
+                phases[index].scale
+            );
+
+        }, 4000);
+
+        return () =>
+            clearInterval(interval);
+
+    }, [showCrisisModal, crisisStep]);
 
     useEffect(() => {
 
@@ -263,6 +322,14 @@ function Journal() {
         }
 
     }, []);
+
+    useEffect(() => {
+
+        if(showCrisisModal){
+            setCrisisStep(1);
+        }
+
+    },[showCrisisModal]);
 
     useEffect(() => {
 
@@ -584,7 +651,7 @@ function Journal() {
     const decoyJournals = [
         {
             _id: "1",
-            title: "🛒 Grocery List",
+            title: "Grocery List",
             content: "Milk\nBread\nVegetables",
             category: "Personal",
             mood: "😊 Happy",
@@ -592,7 +659,7 @@ function Journal() {
         },
         {
             _id: "2",
-            title: "📚 Study Notes",
+            title: "Study Notes",
             content: "Revise React Hooks",
             category: "Personal",
             mood: "😌 Calm",
@@ -600,7 +667,7 @@ function Journal() {
         },
         {
             _id: "3",
-            title: "💼 Meeting Tasks",
+            title: "Meeting Tasks",
             content: "Prepare presentation",
             category: "Personal",
             mood: "😐 Neutral",
@@ -683,7 +750,7 @@ function Journal() {
 
                 const aiReflection = aiResponse.data;
 
-                await API.post("/add-journal", {
+                const response = await API.post("/add-journal", {
 
                     title,
 
@@ -722,6 +789,31 @@ function Journal() {
                         .split("T")[0]
 
                 });
+
+                console.log("CRISIS RESPONSE");
+                console.log(response.data);
+
+                if (response.data.isCrisis) {
+
+                    setCrisisLevel(
+                        response.data.riskLevel
+                    );
+
+                    setCrisisReason(
+                        response.data.reason
+                    );
+
+                    setCrisisRecommendation(
+                        response.data.recommendation
+                    );
+
+                    setSupportPlan(
+                        response.data.supportPlan
+                    );
+
+                    setShowCrisisModal(true);
+
+                }
 
             }
 
@@ -5410,6 +5502,478 @@ function Journal() {
         >
             +
         </button>
+
+        {
+        showCrisisModal && (
+
+        <div
+        className="
+        fixed inset-0
+        bg-black/40
+        backdrop-blur-md
+        flex items-center justify-center
+        z-[9999]
+        px-5
+        "
+        >
+
+        <div
+        className="
+        relative
+        w-full
+        max-w-[560px]
+        rounded-[40px]
+        bg-[#fffdf8]
+        shadow-2xl
+        overflow-hidden
+        "
+        >
+
+        <button
+        onClick={()=>{
+        setShowCrisisModal(false);
+        setCrisisStep(1);
+        }}
+        className="
+        absolute
+        top-7
+        right-8
+        text-3xl
+        text-gray-400
+        hover:text-red-500
+        cursor-pointer
+        "
+        >
+        ×
+        </button>
+
+        <div className="flex justify-center gap-3 pt-8">
+
+        {
+        [1,2,3,4].map(step=>(
+        <div
+        key={step}
+        className={`
+        h-2 rounded-full transition-all duration-500
+
+        ${crisisStep >= step
+        ? "w-10 bg-purple-500"
+        : "w-2 bg-gray-300"
+        }
+        `}
+        >
+        </div>
+        ))
+        }
+
+        </div>
+
+
+
+        <div className="p-10">
+
+        {
+        crisisStep===1 && (
+
+        <>
+
+        <h2 className="text-4xl font-bold text-center">
+
+        {
+        crisisLevel==="Low"
+        ? "Gentle Support"
+
+        : crisisLevel==="Moderate"
+        ? "Emotional Support"
+
+        : "You Are Not Alone"
+        }
+
+        </h2>
+
+        <p className="
+        mt-8
+        text-center
+        text-gray-500
+        leading-8
+        ">
+        {crisisReason}
+        </p>
+
+        <div className="
+        mt-10
+        bg-purple-50
+        rounded-3xl
+        p-8
+        ">
+
+        <h3 className="font-bold text-purple-700 mb-4">
+
+        AI Recommendation
+
+        </h3>
+
+        <p className="text-gray-700 leading-8">
+
+        {crisisRecommendation}
+
+        </p>
+
+        </div>
+
+        <button
+        onClick={()=>setCrisisStep(2)}
+        className="
+        mt-10
+        w-full
+        py-4
+        rounded-3xl
+        bg-gradient-to-r
+        from-purple-600
+        to-fuchsia-500
+        text-white
+        font-semibold
+        cursor-pointer
+        "
+        >
+        Continue
+        </button>
+
+        </>
+
+        )
+        }
+
+        {
+        crisisStep===2 && (
+
+        <>
+
+        <h2 className="text-3xl font-bold text-center">
+        Breathe With Me
+        </h2>
+
+        <div className="
+        flex flex-col items-center
+        mt-12
+        ">
+
+        <div className="relative flex justify-center">
+
+            <div
+            className="
+            absolute
+            w-[300px]
+            h-[300px]
+            rounded-full
+            bg-gradient-to-r
+            from-purple-300/20
+            via-pink-300/20
+            to-fuchsia-300/20
+            blur-[100px]
+            animate-pulse
+            pointer-events-none
+            "
+            />
+
+            <div
+            className="
+            w-48
+            h-48
+
+            rounded-full
+
+            bg-gradient-to-r
+            from-purple-500
+            to-pink-500
+
+            text-white
+
+            flex
+            flex-col
+            items-center
+            justify-center
+
+            shadow-[0_0_80px_rgba(168,85,247,0.4)]
+
+            transition-all
+            duration-[4000ms]
+            ease-in-out
+            "
+            style={{
+                transform: `scale(${breathScale})`
+            }}
+            >
+
+                <span className="text-4xl font-bold">
+
+                    {breathPhase}
+
+                </span>
+
+                <span className="mt-3 text-sm opacity-90">
+
+                    {
+                        breathPhase === "Inhale"
+                            ? "Breathe in slowly"
+
+                            : breathPhase === "Hold"
+                            ? "Hold gently"
+
+                            : "Release slowly"
+                    }
+
+                </span>
+
+            </div>
+
+        </div>
+
+        <p className="
+        mt-10
+        text-center
+        text-gray-500
+        leading-8
+        ">
+        Follow the movement.
+
+        Allow your shoulders to relax.
+
+        There is no rush.
+        </p>
+
+        </div>
+
+        <button
+        onClick={()=>setCrisisStep(3)}
+        className="
+        mt-14
+        w-full
+        py-4
+        rounded-3xl
+        bg-gradient-to-r
+        from-purple-600
+        to-fuchsia-500
+        text-white
+        font-semibold
+        cursor-pointer
+        "
+        >
+        Next →
+        </button>
+
+        </>
+
+        )
+        }
+
+        {
+        crisisStep===3 && (
+
+        <>
+
+        <h2 className="
+        text-3xl
+        font-bold
+        text-center
+        mb-10
+        ">
+        Support Plan
+        </h2>
+
+
+        {
+        crisisLevel==="Low" && (
+
+        <div className="space-y-5">
+
+        <div className="bg-yellow-100 rounded-3xl p-6">
+        {supportPlan.quote}
+        </div>
+
+        <div className="bg-green-100 rounded-3xl p-6">
+        {supportPlan.exercise}
+        </div>
+
+        <div className="bg-pink-100 rounded-3xl p-6">
+        {supportPlan.gratitude}
+        </div>
+
+        </div>
+
+        )
+        }
+
+
+        {
+        crisisLevel==="Moderate" && (
+
+        <div className="space-y-5">
+
+        <div className="bg-orange-100 rounded-3xl p-6">
+        {supportPlan.exercise}
+        </div>
+
+        <div className="bg-pink-100 rounded-3xl p-6">
+        {supportPlan.journalPrompt}
+        </div>
+
+        <div className="bg-purple-100 rounded-3xl p-6">
+        {supportPlan.contactSuggestion}
+        </div>
+
+        </div>
+
+        )
+        }
+
+
+        {
+        crisisLevel==="High" && (
+
+        <div className="space-y-5">
+
+        <a
+        href="tel:18005990019"
+        className="
+        block
+        bg-red-500
+        text-center
+        text-white
+        font-bold
+        rounded-3xl
+        py-5
+        "
+        >
+        KIRAN
+        </a>
+
+        <a
+        href="tel:+912227546669"
+        className="
+        block
+        bg-pink-500
+        text-center
+        text-white
+        font-bold
+        rounded-3xl
+        py-5
+        "
+        >
+        AASRA
+        </a>
+
+        <a
+        href="tel:112"
+        className="
+        block
+        bg-orange-500
+        text-center
+        text-white
+        font-bold
+        rounded-3xl
+        py-5
+        "
+        >
+        Emergency 112
+        </a>
+
+        </div>
+
+        )
+        }
+
+
+        <button
+        onClick={()=>setCrisisStep(4)}
+        className="
+        mt-10
+        w-full
+        py-4
+        rounded-3xl
+        bg-gradient-to-r
+        from-purple-600
+        to-fuchsia-500
+        text-white
+        font-semibold
+        cursor-pointer
+        "
+        >
+        Continue
+        </button>
+
+        </>
+
+        )
+        }
+
+        {
+        crisisStep===4 && (
+
+        <>
+
+        <div className="text-center">
+
+        <h2 className="text-3xl font-bold">
+
+        Remember
+
+        </h2>
+
+        <p className="
+        mt-8
+        text-gray-600
+        leading-8
+        ">
+
+        Feelings are temporary.
+
+        You deserve support.
+
+        You don't have to carry everything alone.
+
+        Small steps count.
+
+        Take things one breath at a time.
+
+        </p>
+
+        </div>
+
+        <button
+        onClick={()=>{
+        setShowCrisisModal(false);
+        setCrisisStep(1);
+        }}
+        className="
+        mt-12
+        w-full
+        py-4
+        rounded-3xl
+        bg-gradient-to-r
+        from-purple-600
+        to-fuchsia-500
+        text-white
+        font-semibold
+        cursor-pointer
+        "
+        >
+        I'm Okay!
+        </button>
+
+        </>
+
+        )
+        }
+
+        </div>
+
+        </div>
+
+        </div>
+
+        )
+        }
 </>
 );
 }

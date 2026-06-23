@@ -32,6 +32,7 @@ import Journal from "./pages/Journal";
 import Analytics from "./pages/Analytics";
 import BreathingExercise from "./pages/BreathingExercise";
 import MeditationPage from "./pages/MeditationPage";
+import WellnessHub from "./pages/WellnessHub";
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -167,6 +168,15 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             </ProtectedRoute>
           }
         />
+
+        <Route
+          path="/wellness-hub"
+          element={
+            <ProtectedRoute>
+              <WellnessHub/>
+            </ProtectedRoute>
+          }
+      />
 
         </Routes>
       </BrowserRouter>

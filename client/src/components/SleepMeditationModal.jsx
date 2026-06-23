@@ -6,32 +6,26 @@ function SleepMeditationModal() {
     const sleepSteps = [
 
         {
-            emoji: "✨",
             message: "Lie down comfortably and close your eyes."
         },
 
         {
-            emoji: "🌸",
             message: "Take a slow deep breath in."
         },
 
         {
-            emoji: "🌿",
             message: "Exhale gently and relax your shoulders."
         },
 
         {
-            emoji: "🌙",
             message: "Let go of the thoughts from today."
         },
 
         {
-            emoji: "💜",
             message: "Feel your body becoming lighter and calmer."
         },
 
         {
-            emoji: "😴",
             message: "Allow yourself to drift into peaceful sleep."
         }
 

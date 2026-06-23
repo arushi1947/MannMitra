@@ -68,23 +68,18 @@ function FocusMeditationModal() {
 
   const tasks = [
     {
-      emoji: "📚",
       label: "Studying"
     },
     {
-      emoji: "💻",
       label: "Work"
     },
     {
-      emoji: "✍️",
       label: "Writing"
     },
     {
-      emoji: "📖",
       label: "Reading"
     },
     {
-      emoji: "🎨",
       label: "Creativity"
     }
   ];

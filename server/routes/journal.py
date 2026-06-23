@@ -1,9 +1,9 @@
 from fastapi import APIRouter
-from database.db import db
+from database.db import db, crisis_alerts, trusted_contacts
 from bson import ObjectId
 from datetime import datetime
 from utils.encryption import (encrypt_text, decrypt_text)
-from routes.ai_insight import generate_profile_insight, generate_journal_sentiment
+from routes.ai_insight import generate_profile_insight, generate_journal_sentiment, detect_crisis, generate_support_plan
 
 router = APIRouter()
 
@@ -106,6 +106,64 @@ async def add_journal(journal: dict):
         encrypted_journal
     )
 
+    crisis = await detect_crisis(
+
+        journal["title"],
+
+        journal["content"],
+
+        journal.get(
+            "mood",
+            ""
+        )
+    )
+
+    is_crisis = crisis["isCrisis"]
+
+    risk_level = crisis["riskLevel"]
+
+    if is_crisis and risk_level in ["Moderate", "High"]:
+
+        crisis_alerts.insert_one({
+
+            "userEmail": journal["userEmail"],
+
+            "journalId":
+            str(result.inserted_id),
+
+            "title":
+            journal["title"],
+
+            "content":
+            journal["content"],
+
+            "riskLevel":
+            risk_level,
+
+            "reason":
+            crisis["reason"],
+
+            "recommendation":
+            crisis["recommendation"],
+
+            "createdAt":
+            datetime.utcnow()
+
+        })
+
+        if risk_level == "High":
+
+            contacts = trusted_contacts.find(
+
+                {
+
+                    "userEmail":
+                    journal["userEmail"]
+
+                }
+
+            )
+
     sentiment = await generate_journal_sentiment(
 
         journal["title"],
@@ -155,9 +213,29 @@ async def add_journal(journal: dict):
         journal["userEmail"]
     )
 
+    support_plan = await generate_support_plan(
+        risk_level
+    )
+
     return {
 
-        "message": "Journal added"
+        "message":
+        "Journal added",
+
+        "isCrisis":
+        crisis["isCrisis"],
+
+        "riskLevel":
+        crisis["riskLevel"],
+
+        "reason":
+        crisis["reason"],
+
+        "recommendation":
+        crisis["recommendation"],
+
+        "supportPlan":
+        support_plan
 
     }
 

@@ -25,7 +25,8 @@ import {
   FaChevronDown,
   FaBars,
   FaWind,
-  FaSpa
+  FaSpa,
+  FaHeart
 } from "react-icons/fa";
 
 function Dashboard() {
@@ -1253,6 +1254,33 @@ function Dashboard() {
 
               </div>
 
+            </div>
+
+            <div
+              onClick={() => navigate("/wellness-hub")}
+              className="
+                  w-[54px]
+                  h-[54px]
+
+                  rounded-full
+
+                  bg-gradient-to-r
+                  from-pink-500
+                  to-purple-500
+
+                  flex
+                  items-center
+                  justify-center
+
+                  shadow-xl
+
+                  cursor-pointer
+
+                  hover:scale-105
+                  transition-all
+              "
+            >
+              <FaHeart className="text-white text-xl" />
             </div>
 
             <div

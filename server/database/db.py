@@ -14,3 +14,7 @@ client = MongoClient(
 )
 
 db = client["mannmitra"]
+
+crisis_alerts = db["crisis_alerts"]
+
+trusted_contacts = db["trusted_contacts"]

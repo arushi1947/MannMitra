@@ -5,7 +5,8 @@ import {
   FaBook,
   FaChartPie,
   FaAngleRight,
-  FaTimes
+  FaTimes,
+  FaHeart
 } from "react-icons/fa";
 import logo from "../assets/logo.png";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -34,6 +35,9 @@ function Sidebar({
   const isAnalytics =
     location.pathname === "/analytics";
 
+  const isWellnessHub =
+    location.pathname === "/wellness-hub";
+
   const isProfile =
     location.pathname === "/profile";
 
@@ -61,6 +65,11 @@ function Sidebar({
 
   const goToAnalytics = () => {
     navigate("/analytics");
+    setSidebarOpen(false);
+  };
+
+  const goToWellnessHub = () => {
+    navigate("/wellness-hub");
     setSidebarOpen(false);
   };
 
@@ -487,6 +496,69 @@ function Sidebar({
             `}
           >
             Analytics
+          </span>
+
+        </button>
+
+        <button
+          onClick={goToWellnessHub}
+          className={`
+            lg:hidden
+
+            flex
+            items-center
+            gap-4
+
+            w-full
+
+            px-3
+            py-3
+
+            rounded-xl
+
+            ${isWellnessHub ? "bg-white/10" : "hover:bg-white/5"}
+
+            transition-all
+            duration-300
+
+            cursor-pointer
+          `}
+        >
+
+          <div
+            className={`
+              w-11
+              h-11
+              rounded-xl
+
+              flex
+              items-center
+              justify-center
+
+              ${
+                isWellnessHub
+                  ? "bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-lg"
+                  : `${sidebarNight ? "text-gray-300" : "text-gray-500"}`
+              }
+            `}
+          >
+            <FaHeart className="text-lg" />
+          </div>
+
+          <span
+            className={`
+              text-[16px]
+
+              ${
+                isWellnessHub
+                  ? "text-purple-400 font-semibold"
+                  : sidebarNight
+                  ? "text-gray-200"
+                  : "text-gray-600"
+              }
+            `}
+          >
+            Care Circle
           </span>
 
         </button>

@@ -2,138 +2,106 @@ import Sidebar from "../components/Sidebar";
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaBars, FaTimes, FaCog, FaSignOutAlt } from "react-icons/fa";
-import QuickRelaxationModal from "../components/QuickRelaxationModal";
-import BodyScanModal from "../components/BodyScanModal";
-import SleepMeditationModal from "../components/SleepMeditationModal";
-import FocusMeditationModal from "../components/FocusMeditationModal";
+import TrustedContactsCard from "../components/TrustedContactsCard";
+import EmergencyCard from "../components/EmergencyCard";
+import CrisisHistoryCard from "../components/CrisisHistoryCard";
 
-function MeditationPage() {
+function WellnessHub() {
 
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const [selectedMeditation, setSelectedMeditation] = useState(null);
-
-  const user = JSON.parse(localStorage.getItem("user"));
-  
-  const [isMobileOrTablet, setIsMobileOrTablet] = useState(window.innerWidth < 1280);
+    const [isMobileOrTablet, setIsMobileOrTablet] = useState(window.innerWidth < 1280);
     
-  const [showProfileMenu, setShowProfileMenu] = useState(false);
-  
-  const profileMenuRef = useRef(null);
-      
-  const navigate = useNavigate();
+    const user = JSON.parse(localStorage.getItem("user"));
+    
+    const [showProfileMenu, setShowProfileMenu] = useState(false);
 
-  useEffect(() => {
-      
-      const handleResize = () => {
-      
-      const mobile = window.innerWidth < 1024;
-      
-      setIsMobileOrTablet(mobile);
-      
-      if (!mobile) {
-          setSidebarOpen(true);
-      }
-      
-      };
-      
-      window.addEventListener("resize", handleResize);
-      
-      handleResize();
-      
-      return () =>
-      window.removeEventListener(
-         "resize",
-          handleResize
-      );
-      
-  }, []);
-  
+    const [selectedCard, setSelectedCard] = useState(null);
+    
+    const profileMenuRef = useRef(null);
+
+    const navigate = useNavigate();
+    
     useEffect(() => {
-      
-      const handleClickOutside = (event) => {
-      
-          if (
-      
-              profileMenuRef.current &&
-      
-              !profileMenuRef.current.contains(event.target)
-      
-          ) {
-      
-          setShowProfileMenu(false);
-      
-          }
-      
-      };
-      
-      document.addEventListener(
-         "mousedown",
-          handleClickOutside
-      );
-      
-      return () => {
-      
-          document.removeEventListener(
-             "mousedown",
-              handleClickOutside
-          );
-      
-      };
-  
-  }, []);
+          
+        const handleResize = () => {
+          
+        const mobile = window.innerWidth < 1024;
+          
+        setIsMobileOrTablet(mobile);
+          
+        if (!mobile) {
+            setSidebarOpen(true);
+        }
+          
+        };
+          
+        window.addEventListener("resize", handleResize);
+          
+        handleResize();
+          
+        return () =>
+        window.removeEventListener(
+           "resize",
+            handleResize
+        );
+          
+    }, []);
 
-  useEffect(() => {
+    useEffect(() => {
+          
+        const handleClickOutside = (event) => {
+          
+           if (
+          
+                profileMenuRef.current &&
+          
+                !profileMenuRef.current.contains(event.target)
+          
+            ) {
+          
+                setShowProfileMenu(false);
+          
+            }
+          
+        };
+          
+        document.addEventListener(
+            "mousedown",
+            handleClickOutside
+        );
+          
+        return () => {
+          
+            document.removeEventListener(
+               "mousedown",
+                handleClickOutside
+            );
+          
+        };
+      
+    }, []);
 
-      if (selectedMeditation) {
-
-          document.body.style.overflow = "hidden";
-
-      }
-
-      else {
-
-          document.body.style.overflow = "auto";
-
-      }
-
-      return () => {
-
-          document.body.style.overflow = "auto";
-
-      };
-
-  }, [selectedMeditation]);
-
-  const meditations = [
+    const cards = [
 
     {
-      title: "Quick Relaxation",
-      duration: "2 min",
-      emoji: "🌸"
+    title: "Trusted Contacts",
+    emoji: "❤️"
     },
 
     {
-    title: "Body Scan Meditation",
-    duration: "5 min",
-    emoji: "🌊"
+    title: "Emergency Support",
+    emoji: "🆘"
     },
 
     {
-      title: "Sleep Meditation",
-      duration: "10 min",
-      emoji: "🌙"
+    title: "Crisis History",
+    emoji: "📊"
     },
 
-    {
-      title: "Focus Meditation",
-      duration: "15 min",
-      emoji: "✨"
-    }
+    ];
 
-  ];
-
-  return (  
+return (  
       <>
         <Sidebar
           sidebarOpen={sidebarOpen}
@@ -211,7 +179,7 @@ function MeditationPage() {
                                   </button>
   
               <h1 className="text-lg sm:text-2xl md:text-4xl font-bold text-gray-800">
-                Guided Meditation
+                Care Circle
               </h1>
   
           </div>
@@ -430,192 +398,219 @@ function MeditationPage() {
   
               </div>
 
-        <div
-        className="
-        grid
+<div
+className="
+mt-10 sm:mt-16 lg:mt-24
 
-        grid-cols-1
-        md:grid-cols-2
+grid
+grid-cols-1
+md:grid-cols-2
+xl:grid-cols-3
 
-        gap-5
-        sm:gap-8
+gap-6
+"
+>
+{
+cards.map((item,index)=>(
 
-        mt-8
-        "
-        >
+<div
+key={index}
 
-          {meditations.map((item, index) => (
+className="
+bg-white/80
+rounded-[30px]
+p-5 sm:p-8
+min-h-[200px] sm:min-h-[240px]
 
-            <div
-              key={index}
-              className="
-              bg-white/80
+shadow-xl
 
-              rounded-[28px]
+flex
+flex-col
+justify-between
 
-              p-6
-              sm:p-8
+"
+>
 
-              shadow-xl
+<div className="flex flex-col items-center text-center">
 
-              "
-            >
+<div className="text-5xl sm:text-6xl">
+{item.emoji}
+</div>
 
-              <div className="text-4xl sm:text-5xl">
-                {item.emoji}
-              </div>
+<h2
+className="
+text-xl
+sm:text-2xl
+font-bold
+mt-4
+text-gray-800
+"
+>
+{item.title}
+</h2>
 
-              <h2 className="text-xl sm:text-2xl font-bold mt-5">
-                {item.title}
-              </h2>
+</div>
 
-              <p className="text-gray-500 mt-3">
-                Duration: {item.duration}
-              </p>
+<div className="flex justify-center mt-8">
 
-              <button
+<button
+onClick={() => setSelectedCard(item)}
+className="
+px-6 sm:px-8
+py-3
+w-full sm:w-auto
 
-              onClick={() => setSelectedMeditation(item)}
+rounded-full
 
-              className="
-              mt-6
-              bg-gradient-to-r
-              from-purple-600
-              to-pink-500
+bg-gradient-to-r
+from-purple-600
+to-pink-500
 
-              w-full
-              sm:w-auto
+text-white
+font-semibold
 
-              px-6
-              py-3
+hover:scale-105
+transition-all
+duration-300
 
-              rounded-full
+cursor-pointer
+"
+>
+Open
+</button>
 
-              text-white
-              font-semibold
+</div>
 
-              hover:scale-105
-              transition-all
-              cursor-pointer
-              "
-              >
+</div>
 
-              Start Session
+))
+}
+</div>
+</div>
 
-              </button>
+{
+selectedCard && (
 
-            </div>
+<div
+className="
+fixed
+inset-0
+z-50
+bg-black/40
+backdrop-blur-md
+flex
+items-center
+justify-center
+p-4
+"
+>
 
-          ))}
+<div
+className="
+relative
 
-        </div>
+bg-white/90
+backdrop-blur-xl
 
-      </div>
+w-full
+max-w-5xl
 
-      {
-      selectedMeditation && (
+h-[92vh]
+md:h-auto
+md:max-h[92vh]
 
-      <div
-      className="
-      fixed
+rounded-[30px]
+sm:rounded-[40px]
 
-      inset-0
+shadow-2xl
 
-      z-50
+overflow-hidden
 
-      bg-black/40
-      backdrop-blur-md
+flex
+flex-col
+"
+>
 
-      flex
-      items-center
-      justify-center
+<button
+onClick={()=>setSelectedCard(null)}
+className="
+absolute
+top-3
+right-3
+sm:top-5
+sm:right-5
 
-      p-4
-      "
-      >
+w-10
+h-10
 
-      <div
-      className="
-      relative
+flex
+items-center
+justify-center
 
-      bg-white/90
-      backdrop-blur-xl
+rounded-full
 
-      rounded-[30px]
-      sm:rounded-[40px]
+bg-gray-100
+hover:bg-gray-200
 
-      shadow-2xl
+text-xl
+text-gray-500
 
-      w-full
-      max-w-3xl
+transition-all
+duration-300
 
-      max-h-[92vh]
+cursor-pointer
 
-      overflow-y-auto
-      hide-scrollbar
+z-20
+"
+>
+✕
+</button>
 
-      p-5
-      sm:p-8
-      md:p-10
-      "
-      >
+{
+selectedCard.title==="Trusted Contacts" && (
 
-      <button
+<div className="flex-1 p-5 sm:p-8 lg:p-10 overflow-hidden">
 
-      onClick={() => setSelectedMeditation(null)}
+    <TrustedContactsCard/>
 
-      className="
-      absolute
+</div>
 
-      top-4
-      right-4
-
-      sm:top-6
-      sm:right-6
-
-      text-2xl
-      sm:text-3xl
-
-      text-gray-400
-      "
-      >
-
-      ✕
-
-      </button>
-
-      {
-      selectedMeditation.title==="Quick Relaxation" &&
-      <QuickRelaxationModal/>
-      }
-
-      {
-      selectedMeditation.title==="Body Scan Meditation" &&
-      <BodyScanModal/>
-      }
-
-      {
-      selectedMeditation.title==="Sleep Meditation" &&
-      <SleepMeditationModal/>
-      }
-
-      {
-      selectedMeditation.title==="Focus Meditation" &&
-      <FocusMeditationModal/>
-      }
-
-      </div>
-
-      </div>
-
-      )
-      }
-
-    </div>
-
-    </>
-
-  );
+)
 }
 
-export default MeditationPage;
+{
+selectedCard.title === "Emergency Support" && (
+
+<div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-10">
+
+    <EmergencyCard/>
+
+</div>
+
+)
+}
+
+{
+selectedCard.title==="Crisis History" && (
+
+<div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-10">
+    <CrisisHistoryCard/>
+</div>
+
+)
+}
+
+</div>
+
+</div>
+
+)
+}
+</div>
+</>
+
+);
+
+}
+
+export default WellnessHub;

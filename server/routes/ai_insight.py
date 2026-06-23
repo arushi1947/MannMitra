@@ -16,7 +16,6 @@ model = genai.GenerativeModel(
     "gemini-2.5-flash"
 )
 
-
 async def generate_ai_insight(
     moods
 ):
@@ -505,6 +504,183 @@ async def generate_journal_sentiment(
 
             "insight":
             "Continue expressing your thoughts through journaling."
+
+        }
+
+async def detect_crisis(title, content, mood):
+
+    prompt = f"""
+You are a mental health risk detection assistant.
+
+Journal Title:
+{title}
+
+Mood:
+{mood}
+
+Journal Content:
+{content}
+
+Classify emotional risk.
+
+HIGH:
+- suicidal thoughts
+- self harm
+- wanting to disappear
+- life feels meaningless
+- hopelessness
+- not wanting to live
+
+MODERATE:
+- panic
+- anxiety
+- loneliness
+- burnout
+- severe stress
+
+LOW:
+- temporary sadness
+- disappointment
+- frustration
+
+Return ONLY valid JSON.
+
+Example:
+
+{{
+    "isCrisis": true,
+    "riskLevel": "High",
+    "reason": "Possible hopelessness and suicidal ideation detected.",
+    "recommendation": "Please reach out to someone you trust or contact a mental health helpline."
+}}
+
+Do not add markdown.
+Do not explain anything.
+Return JSON only.
+"""
+
+    try:
+
+        response = model.generate_content(prompt)
+
+        print("\n========== RAW GEMINI RESPONSE ==========")
+        print(response.text)
+        print("=========================================\n")
+
+        clean_response = (
+            response.text
+            .replace("```json", "")
+            .replace("```", "")
+            .strip()
+        )
+
+        # Extract JSON safely
+        start = clean_response.find("{")
+        end = clean_response.rfind("}") + 1
+
+        clean_response = clean_response[start:end]
+
+        result = json.loads(clean_response)
+
+        print("\n========== PARSED RESULT ==========")
+        print(result)
+        print("===================================\n")
+
+        return {
+
+            "isCrisis": result.get(
+                "isCrisis",
+                False
+            ),
+
+            "riskLevel": result.get(
+                "riskLevel",
+                "Low"
+            ),
+
+            "reason": result.get(
+                "reason",
+                ""
+            ),
+
+            "recommendation": result.get(
+                "recommendation",
+                ""
+            )
+
+        }
+
+    except Exception as e:
+
+        print("\n========== CRISIS DETECTION ERROR ==========")
+        print(e)
+
+        try:
+            print("Gemini returned:")
+            print(response.text)
+        except:
+            pass
+
+        print("============================================\n")
+
+        return {
+
+            "isCrisis": False,
+
+            "riskLevel": "Low",
+
+            "reason": "",
+
+            "recommendation": ""
+
+        }
+    
+async def generate_support_plan(risk_level):
+
+    if risk_level == "Low":
+
+        return {
+
+            "exercise": "4-4-6 Breathing",
+
+            "quote":
+            "Small steps count. Be gentle with yourself.",
+
+            "gratitude":
+            "Write three things you're thankful for."
+
+        }
+
+    elif risk_level == "Moderate":
+
+        return {
+
+            "exercise":
+            "5-4-3-2-1 Grounding Exercise",
+
+            "journalPrompt":
+            "What is worrying you most right now?",
+
+            "contactSuggestion":
+            "Consider talking to someone you trust."
+
+        }
+
+    else:
+
+        return {
+
+            "exercise":
+            "Box Breathing",
+
+            "kiran":
+            "1800-599-0019",
+
+            "aasra":
+            "+91 22 27546669",
+
+            "emergency":
+            "112"
 
         }
 
